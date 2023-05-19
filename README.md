@@ -1,17 +1,20 @@
 # Install Elasticsearch + Kibana + Filebeat - v(8.7.1)
 
-### Build Docker-compose
+### 1 - Build Docker-compose
 
 - [x] docker-compose --env-file=.env up --build
 
 - [x] docker compose --env-file=.env up --build
 
-
+### 2 - Connect Elasticsearch service:
+```
+    docker compose --env-file=.env-local exec elasticsearch sh
+```
 ### Permission Elastic users
 
 - [x] Dentro do container:
 ```
-    - Este comando faz vc digitar as senhas:
+    - Este comando para adicionar as senhas, digite ou cole as senhas iguais para todos:
         command: bin/elasticsearch-setup-passwords interactive
 
         Changed password for user apm_system      
