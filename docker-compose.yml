@@ -43,16 +43,21 @@ services:
     filebeat:
         image: docker.elastic.co/beats/filebeat:$FIREBEAT_VERSION
         container_name: filebeat
-        command: >
-            bash -c ''
+        user: root
+        environment:
+            - ELASTICSEARCH_HOSTS=$ELASTIC_HOSTNAME
+            - ELASTICSEARCH_USERNAME=$ELASTIC_USERNAME
+            - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
         volumes:
-            - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
-            - ./test.log:/var/log/app_logs/test.log
+         #   - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:rw
+            - ./filebeat/log:/var/log/app_logs/test.log
             - data-firebeat:/usr/share/elasticsearch/config/certs
         depends_on: 
             - elasticsearch
+            - kibana
         links: 
             - elasticsearch
+            - kibana
         networks:
             - elastic
 

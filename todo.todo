@@ -1,13 +1,9 @@
 1 - Dentro do container:
-    1.1 - ativa a atuenticação:
-        curl -X GET "127.0.0.1:9200/?pretty"
-    
-        Este comando gera as senhas automaticamente
-        command: bin/elasticsearch-setup-passwords auto
+    1.1 - Este comando faz vc digitar as senhas:
+        command: bin/elasticsearch-setup-passwords interactive
 
-        ex:
-            Changed password for user apm_system      
-            PASSWORD apm_system = c5kiJN1svgnsakiCrIvV
+        Changed password for user apm_system      
+            PASSWORD apm_system = V9TGL4VbU4IGtBOClFdK
 
             Changed password for user kibana_system      
             PASSWORD kibana_system = V9TGL4VbU4IGtBOClFdK
@@ -16,19 +12,16 @@
             PASSWORD kibana = V9TGL4VbU4IGtBOClFdK
 
             Changed password for user logstash_system
-            PASSWORD logstash_system = ClwkeaCFheaeDOvgPC6D
+            PASSWORD logstash_system = V9TGL4VbU4IGtBOClFdK
 
             Changed password for user beats_system
-            PASSWORD beats_system = frgU7vPGNGtwcSYTfxBA
+            PASSWORD beats_system = V9TGL4VbU4IGtBOClFdK
 
             Changed password for user remote_monitoring_user
-            PASSWORD remote_monitoring_user = a4WryKpAYBCOQbdVKsKO
+            PASSWORD remote_monitoring_user = V9TGL4VbU4IGtBOClFdK
 
             Changed password for user elastic
-            PASSWORD elastic = kfTbfVqqQMlcpqGv7tpm
-
-    Este comando faz vc digitar as senhas:
-        command: bin/elasticsearch-setup-passwords interactive
+            PASSWORD elastic = V9TGL4VbU4IGtBOClFdK
 
 2 - Digite a senha da sua preferencia e repita até acabar o processo:
     
