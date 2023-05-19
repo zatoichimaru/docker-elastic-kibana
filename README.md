@@ -10,7 +10,7 @@
 ```
     docker compose --env-file=.env-local exec elasticsearch sh
 ```
-### Permission Elastic users
+### 3 - Permission Elastic users
 
 - [x] Dentro do container:
 ```
