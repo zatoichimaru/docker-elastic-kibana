@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
+      - ./elasticsearch/logs:/usr/share/elasticsearch/logs
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elastic
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.7.0
+    container_name: kibana
+    environment:
+      #- ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - xpack.security.enabled=true
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    healthcheck:
+      test: ["CMD", "curl", "-f", "kibana:5601"]
+      interval: 50s
+      timeout: 50s
+      retries: 5
+    networks:
+      - elastic   
+
+  filebeat:
+    user: root
+    image: docker.elastic.co/beats/filebeat:7.7.0
+    container_name: filebeat
+    command: --strict.perms=false
+    volumes:
+      #- ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./filebeat/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:   
+      kibana:
+        condition: service_healthy
+    networks:
+      - elastic   
+
+#volumes:
+#    elasticsearch-data:
+#    elasticsearch-logs:
+
+networks:
+  elastic:
+    name: elastic

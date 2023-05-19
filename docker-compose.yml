@@ -1,0 +1,66 @@
+version: '3.8'
+services:
+
+    elasticsearch:
+        image: elasticsearch:$ELASTIC_VERSION
+        container_name: elasticsearch
+        restart: unless-stopped
+        ports:
+            - $ELASTIC_PORT:9200
+        environment:
+            - ES_JAVA_OPTS=-Xmx256m -Xms256m
+            - ELASTIC_USERNAME=$ELASTIC_USERNAME
+            - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+            - http.cors.enabled=true
+            - http.cors.allow-origin="*"
+            - discovery.type=single-node
+            - xpack.security.enabled=true
+        volumes:
+            - ./elasticsearch-data:/usr/share/elasticsearch/data
+            - ./elasticsearch-logs:/usr/share/elasticsearch/logs
+        networks:
+            - elastic
+
+    kibana:
+        image: kibana:$KIBANA_VERSION
+        container_name: kibana
+        restart: unless-stopped
+        environment:
+            - ELASTICSEARCH_HOSTS=$ELASTIC_HOSTNAME
+            - ELASTICSEARCH_USERNAME=$KIBANA_USERNAME
+            - ELASTICSEARCH_PASSWORD=$KIBANA_PASSWORD
+        #volumes:
+        #    - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+        ports:
+            - $KIBANA_PORT:5601
+        links: 
+            - elasticsearch
+        depends_on: 
+            - elasticsearch
+        networks:
+            - elastic
+
+    filebeat:
+        image: docker.elastic.co/beats/filebeat:$FIREBEAT_VERSION
+        container_name: filebeat
+        command: >
+            bash -c ''
+        volumes:
+            - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+            - ./test.log:/var/log/app_logs/test.log
+            - data-firebeat:/usr/share/elasticsearch/config/certs
+        depends_on: 
+            - elasticsearch
+        links: 
+            - elasticsearch
+        networks:
+            - elastic
+
+volumes:
+    elasticsearch-data:
+    elasticsearch-logs:
+    data-firebeat:
+
+networks:
+  elastic:
+    name: elastic
