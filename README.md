@@ -1,40 +1,66 @@
-# Install Elasticsearch + Kibana + Filebeat - v(8.7.1)
+# Install Sonarqube 10 e Postgres 15 
 
-### 1 - Build Docker-compose
+### Windows configuration
 
-- [x] docker-compose --env-file=.env up --build
-
-- [x] docker compose --env-file=.env up --build
-
-### 2 - Connect Elasticsearch service:
+# Open Powershell
 ```
-    docker compose --env-file=.env-local exec elasticsearch sh
+wsl -d docker-desktop sysctl -w vm.max_map_count=262144
 ```
-### 3 - Permission Elastic users
-
-- [x] Dentro do container:
+ou
 ```
-    - Este comando para adicionar as senhas, digite ou cole as senhas iguais para todos:
-        command: bin/elasticsearch-setup-passwords interactive
+wsl -d docker-desktop echo "vm.max_map_count = 262144" > /etc/sysctl.d/99-docker-desktop.conf
+```
+### Linux configuration
 
-        Changed password for user apm_system      
-            PASSWORD apm_system = V9TGL4VbU4IGtBOClFdK
+# Open Terminal
+```
+sudo sysctl -w vm.max_map_count=262144
+```
+ou
+```
+sudo echo "vm.max_map_count = 262144" > /etc/sysctl.d/99-docker-desktop.conf
+```
 
-            Changed password for user kibana_system      
-            PASSWORD kibana_system = V9TGL4VbU4IGtBOClFdK
+### POSTGRES Environments:
+```
+    POSTGRES_VERSION=15
 
-            Changed password for user kibana
-            PASSWORD kibana = V9TGL4VbU4IGtBOClFdK
+    POSTGRES_PROD_USER=sonar_prod
+    POSTGRES_PROD_PASSWORD=sonar_prod
+    POSTGRES_PROD_DB=sonar_prod
+    POSTGRES_PROD_PORT=5432
 
-            Changed password for user logstash_system
-            PASSWORD logstash_system = V9TGL4VbU4IGtBOClFdK
+    POSTGRES_QA_USER=sonar_qa
+    POSTGRES_QA_PASSWORD=sonar_qa
+    POSTGRES_QA_DB=sonar_qa
+    POSTGRES_QA_PORT=5433
+```
 
-            Changed password for user beats_system
-            PASSWORD beats_system = V9TGL4VbU4IGtBOClFdK
+### SONAR Environments:
+```
+    SONAR_VERSION=10.1.0-community
 
-            Changed password for user remote_monitoring_user
-            PASSWORD remote_monitoring_user = V9TGL4VbU4IGtBOClFdK
+    SONARQUBE_PROD_JDBC_URL=jdbc:postgresql://postgres_prod:5432/sonar_prod
+    SONARQUBE_PROD_JDBC_USERNAME=sonar_prod
+    SONARQUBE_PROD_JDBC_PASSWORD=sonar_prod
+    SONARQUBE_PROD_PORT=9000
 
-            Changed password for user elastic
-            PASSWORD elastic = V9TGL4VbU4IGtBOClFdK
+    SONARQUBE_QA_JDBC_URL=jdbc:postgresql://postgres_qa:5432/sonar_qa
+    SONARQUBE_QA_JDBC_USERNAME=sonar_qa
+    SONARQUBE_QA_JDBC_PASSWORD=sonar_qa
+    SONARQUBE_QA_PORT=9000
+```
+### Execution
+
+# Step 1
+```
+  cd postgres
+  docker compose up --env-file=.env up --build -d
+
+```
+# Step 2
+```
+  cd sonarqube
+  docker compose up --env-file=.env up --build -d
+
 ```
